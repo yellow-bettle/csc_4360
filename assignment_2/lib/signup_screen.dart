@@ -74,6 +74,21 @@ class _SignUpFormState extends State<SignUpForm> {
         children: [
           AnimatedProgressIndicator(value: _formProgress), // NEW
           Text('Sign up', style: Theme.of(context).textTheme.headline4),
+          Container(
+            alignment: Alignment.center,
+            child: _success
+                ? Text("")
+                : Container(
+                    margin: const EdgeInsets.all(7),
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.redAccent)),
+                    child: Text(
+                      _success ? '' : _failureReason,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
@@ -148,7 +163,7 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             onPressed: () async {
               // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate() && _formProgress == 1) {
+              if (_formKey.currentState!.validate()) {
                 HashSet<Object> response = await _auth.signUp(
                     context,
                     _firstName.value.text,
@@ -168,28 +183,30 @@ class _SignUpFormState extends State<SignUpForm> {
             child: const Text('Sign up'),
           ),
           Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              _success ? '' : _failureReason,
-              style: TextStyle(color: Colors.red),
-            ),
+            margin: const EdgeInsets.only(top: 10, bottom: 5),
+            child: Text('Already have an account ?'),
           ),
-          Text('Already have an account ?'),
-          TextButton(
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.resolveWith(
-                  (Set<MaterialState> states) {
-                Colors.white;
-              }),
-              backgroundColor: MaterialStateProperty.resolveWith(
-                  (Set<MaterialState> states) {
-                Colors.blue;
-              }),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: TextButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.resolveWith(
+                    (Set<MaterialState> states) {
+                  return states.contains(MaterialState.disabled)
+                      ? null
+                      : Colors.white;
+                }),
+                backgroundColor: MaterialStateProperty.resolveWith(
+                    (Set<MaterialState> states) {
+                  return states.contains(MaterialState.disabled)
+                      ? null
+                      : Colors.blue;
+                }),
+              ),
+              onPressed: () => _loginSignupNavigator(context, '/login'),
+              child: const Text('Login'),
             ),
-            onPressed: () => _loginSignupNavigator(context, '/login'),
-            child: const Text('Login'),
-          ),
+          )
         ],
       ),
     );

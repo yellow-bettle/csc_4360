@@ -24,13 +24,11 @@ flutter_native_splash:
   image: assets/new_profile.png
   image_dark: assets/new_profile.png
   color_dark: "#000000"
-  android: true
-  ios: true
-  web: true
   android_gravity: fill
-  iost_content_mode: scaleAspectFill
+  ios_content_mode: scaleAspectFill
+  web_image_mode: stretch
   fullscreen: true
-
+  ios: false
 
 assets:
   - assets/
@@ -44,5 +42,3 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   uses-material-design: true
-
-

@@ -67,21 +67,48 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           AnimatedProgressIndicator(value: _formProgress), // NEW
           Text('Login', style: Theme.of(context).textTheme.headline4),
+          Container(
+            alignment: Alignment.center,
+            child: _success
+                ? Text("")
+                : Container(
+                    margin: const EdgeInsets.all(7),
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.redAccent)),
+                    child: Text(
+                      _success ? '' : _failureReason,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(11.0),
             child: TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
                   hintText: 'Email', border: OutlineInputBorder()),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your first name';
+                }
+                return null;
+              },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(15.0),
             child: TextFormField(
               obscureText: true,
               controller: _passwordController,
               decoration: const InputDecoration(
                   hintText: 'Password', border: OutlineInputBorder()),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your first name';
+                }
+                return null;
+              },
             ),
           ),
           TextButton(
@@ -100,9 +127,9 @@ class _LoginFormState extends State<LoginForm> {
               }),
             ),
             onPressed: () async {
-              // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate() && _formProgress == 1) {
-                HashSet<Object> response = await _auth.signIn(
+              print("Signin");
+              if (_formKey.currentState!.validate()) {
+                HashSet<Object> response = await _auth.sigInWithEmail(
                     context,
                     _emailController.value.text,
                     _passwordController.value.text);
@@ -118,28 +145,30 @@ class _LoginFormState extends State<LoginForm> {
             child: const Text('Login'),
           ),
           Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              _success ? '' : _failureReason,
-              style: TextStyle(color: Colors.red),
-            ),
+            margin: const EdgeInsets.only(top: 10),
+            child: Text('Don\'t have an account ?'),
           ),
-          Text('Don\'t have an account ?'),
-          TextButton(
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.resolveWith(
-                  (Set<MaterialState> states) {
-                Colors.white;
-              }),
-              backgroundColor: MaterialStateProperty.resolveWith(
-                  (Set<MaterialState> states) {
-                Colors.blue;
-              }),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.resolveWith(
+                    (Set<MaterialState> states) {
+                  return states.contains(MaterialState.disabled)
+                      ? null
+                      : Colors.white;
+                }),
+                backgroundColor: MaterialStateProperty.resolveWith(
+                    (Set<MaterialState> states) {
+                  return states.contains(MaterialState.disabled)
+                      ? null
+                      : Colors.blue;
+                }),
+              ),
+              onPressed: () => _loginSignupNavigator(context, '/signup'),
+              child: const Text('Sign up'),
             ),
-            onPressed: () => _loginSignupNavigator(context, '/signup'),
-            child: const Text('Sign up'),
-          ),
+          )
         ],
       ),
     );

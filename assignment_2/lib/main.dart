@@ -11,14 +11,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.removeAfter(initialization);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FlutterNativeSplash.remove();
   runApp(Authentication());
 }
-
-void initialization(BuildContext context) async {}
 
 class Authentication extends StatelessWidget {
   Authentication();

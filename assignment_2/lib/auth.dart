@@ -76,7 +76,8 @@ class AuthService {
     }
   }
 
-  Future signIn(BuildContext context, String email, String password) async {
+  Future sigInWithEmail(
+      BuildContext context, String email, String password) async {
     print("login");
 
     try {

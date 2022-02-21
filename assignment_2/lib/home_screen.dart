@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .whenComplete(() => Navigator.of(context).pop());
   }
 
-  void deleteTodo(item) {
+  void deletePost(item) {
     DocumentReference documentReference =
         FirebaseFirestore.instance.collection("posts").doc(item);
 
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.red,
                                   onPressed: () {
                                     setState(() {
-                                      deleteTodo((documentSnapshot != null)
+                                      deletePost((documentSnapshot != null)
                                           ? (documentSnapshot["timestamp"])
                                           : "");
                                     });
