@@ -31,6 +31,7 @@
 /assignment_2/.pub/
 /assignment_2//build/
 /assignment_2/ios/Runner/GoogleService-Info.plist
+/assignment_2/ios/Runner/Info.plist
 /assignment_2/android/app/google-services.json
 
 # Web related
