@@ -69,6 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       ScaffoldMessenger.of(context).showSnackBar(singOutText);
+      if (await _auth.googleSignIn.isSignedIn()) {
+        _auth.signOutWithGoogle();
+      }
       _auth.signOut();
       Navigator.pop(context);
       Navigator.of(context).pushReplacementNamed('/');

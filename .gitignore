@@ -1,0 +1,52 @@
+# Miscellaneous
+/assignment_2/*.class
+/assignment_2/*.log
+/assignment_2/*.pyc
+/assignment_2/*.swp
+/assignment_2/.DS_Store
+/assignment_2/.atom/
+/assignment_2/.buildlog/
+/assignment_2/.history
+/assignment_2/.svn/
+
+# IntelliJ related
+/assignment_2/*.iml
+/assignment_2/*.ipr
+/assignment_2/*.iws
+/assignment_2/.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+/assignment_2/**/doc/api/
+/assignment_2/**/ios/Flutter/.last_build_id
+/assignment_2/.dart_tool/
+/assignment_2/.flutter-plugins
+/assignment_2/.flutter-plugins-dependencies
+/assignment_2/.packages
+/assignment_2/.pub-cache/
+/assignment_2/.pub/
+/assignment_2//build/
+/assignment_2/ios/Runner/GoogleService-Info.plist
+/assignment_2/android/app/google-services.json
+
+# Web related
+/assignment_2/lib/generated_plugin_registrant.dart
+
+# Symbolication related
+/assignment_2/app.*.symbols
+
+# Obfuscation related
+/assignment_2/app.*.map.json
+
+# Android Studio will place build artifacts here
+/assignment_2/android/app/debug
+/assignment_2/android/app/profile
+/assignment_2/android/app/release
+
+# Firebase
+/assignment_2/lib/firebase_options.dart
+/assignment_2/assets/.env

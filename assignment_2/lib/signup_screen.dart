@@ -169,7 +169,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     _firstName.value.text,
                     _lastName.value.text,
                     _emailController.value.text,
-                    _passwordController.value.text);
+                    _passwordController.value.text,);
 
                 if (response.elementAt(0) == false) {
                   setState(() {

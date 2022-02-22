@@ -18,6 +18,8 @@ dependencies:
   cloud_firestore: ^3.1.8
   twitter_login: ^4.0.1
   flutter_dotenv: ^5.0.2
+  google_sign_in: ^5.2.4
+
 
 flutter_native_splash:
   color: "#000000"

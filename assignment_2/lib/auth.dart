@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:twitter_login/twitter_login.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:async';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   void initialization() async {
@@ -16,11 +16,67 @@ class AuthService {
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final googleSignIn = GoogleSignIn();
   bool _success = false;
   String _failureReason = "None";
 
   String getUser() {
     return _auth.currentUser?.uid ?? "NOUSER";
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    if (kIsWeb) {
+      // Create a new provider
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      googleProvider
+          .addScope('https://www.googleapis.com/auth/contacts.readonly');
+      googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
+
+      // Once signed in, return the UserCredential
+      return await FirebaseAuth.instance.signInWithPopup(googleProvider);
+    } else {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    }
+  }
+
+  void storeGoogleUserInCollection(UserCredential user) {
+    String timestamp = DateTime.now().toString();
+
+    if (user.additionalUserInfo?.isNewUser == true) {
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection("users").doc(timestamp);
+
+      var uuid = Uuid();
+      var v1 = uuid.v1();
+      // print(user.additionalUserInfo?.profile);
+      Map<String, String> todoList = {
+        "firstName": user.additionalUserInfo?.profile?["given_name"],
+        "lastName": user.additionalUserInfo?.profile?["family_name"],
+        "role": "customer",
+        "timestamp": timestamp,
+        "userId": v1,
+      };
+
+      documentReference
+          .set(todoList)
+          .whenComplete(() => print("Data stored successfully"));
+    }
+    return;
   }
 
   Future signUp(BuildContext context, String firstName, String lastName,
@@ -106,26 +162,9 @@ class AuthService {
     }
   }
 
-  Future<UserCredential> signInWithTwitter() async {
-    // Create a TwitterLogin instance
-
-    final twitterLogin = new TwitterLogin(
-        apiKey: dotenv.env["TWITTER_API_KEY"].toString(),
-        apiSecretKey: dotenv.env["TWITTER_API_SECRET"].toString(),
-        redirectURI: dotenv.env["TWITTER_REDIRECT_URI"].toString());
-
-    // Trigger the sign-in flow
-    final authResult = await twitterLogin.login();
-
-    // Create a credential from the access token
-    final twitterAuthCredential = TwitterAuthProvider.credential(
-      accessToken: authResult.authToken!,
-      secret: authResult.authTokenSecret!,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance
-        .signInWithCredential(twitterAuthCredential);
+  void signOutWithGoogle() async {
+    print(await googleSignIn.isSignedIn());
+    await googleSignIn.disconnect();
   }
 
   void signOut() {

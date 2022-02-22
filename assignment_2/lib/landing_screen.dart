@@ -38,18 +38,15 @@ class LandingScreen extends StatelessWidget {
                 style: style,
                 onPressed: () async {
                   UserCredential? user;
-
                   try {
-                    UserCredential? user = await _auth.signInWithTwitter();
+                    UserCredential? user = await _auth.signInWithGoogle();
+                    print(user);
+                    _auth.storeGoogleUserInCollection(user);
+                    if (user != null) {
+                      Navigator.of(context).pushReplacementNamed("/welcome");
+                    }
                   } catch (e) {
                     print(e);
-                  }
-
-                  print(user);
-
-                  if (user != null) {
-                    print(user);
-                    Navigator.of(context).pushReplacementNamed("/welcome");
                   }
                 },
                 child: const Text('Twitter Account'),
