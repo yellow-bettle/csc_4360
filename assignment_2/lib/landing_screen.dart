@@ -49,7 +49,7 @@ class LandingScreen extends StatelessWidget {
                     print(e);
                   }
                 },
-                child: const Text('Twitter Account'),
+                child: const Text('Google Account'),
               ),
             ],
           ),
