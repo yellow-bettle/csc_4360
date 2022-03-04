@@ -28,6 +28,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final user = Provider.of<User?>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         // The search area here
         title: Container(
           width: double.infinity,
@@ -58,22 +59,30 @@ class _SearchScreenState extends State<SearchScreen> {
           padding: const EdgeInsets.all(8),
           itemCount: userFirstNames.length,
           itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-                title: Text(
-                    '${userFirstNames.elementAt(index)["firstName"]} ${userFirstNames.elementAt(index)["lastName"]}'),
-                onTap: () async {
-                  String convoId = getConversationID(
-                      user?.uid, userFirstNames.elementAt(index)["userId"]);
+            return Card(
+              child: ListTile(
+                  leading: Icon(
+                    Icons.person,
+                    size: 30,
+                  ),
+                  trailing: Icon(Icons.chat),
+                  title: Text(
+                      '${userFirstNames.elementAt(index)["firstName"]} ${userFirstNames.elementAt(index)["lastName"]}'),
+                  onTap: () async {
+                    String convoId = getConversationID(
+                        user?.uid, userFirstNames.elementAt(index)["userId"]);
 
-                  await _auth.sendMessage(convoId, user?.uid,
-                      userFirstNames.elementAt(index)["userId"], "dummyData");
+                    await _auth.sendMessage(convoId, user?.uid,
+                        userFirstNames.elementAt(index)["userId"], "dummyData");
 
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => NewConversationScreen(
-                          uid: user?.uid,
-                          contact: userFirstNames.elementAt(index),
-                          convoID: convoId)));
-                });
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            NewConversationScreen(
+                                uid: user?.uid,
+                                contact: userFirstNames.elementAt(index),
+                                convoID: convoId)));
+                  }),
+            );
           }),
     );
   }

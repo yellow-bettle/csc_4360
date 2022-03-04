@@ -20,15 +20,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _success = true;
   String _failureReason = '';
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 244, 245, 247),
         body: Container(
           padding: const EdgeInsets.all(40),
-          margin: const EdgeInsets.only(top: 60),
+          margin: const EdgeInsets.only(top: 30),
           child: Form(
             key: _formKey, // NEW
             child: Column(
@@ -39,7 +37,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.black)),
-                Container(
+                Expanded(
+                    child: Container(
+                  height: 100,
                   alignment: Alignment.center,
                   child: _success
                       ? Text("")
@@ -55,9 +55,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             style: const TextStyle(color: Colors.black),
                           ),
                         ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                )),
+                Expanded(
                   child: TextFormField(
                     controller: _firstName,
                     decoration: const InputDecoration(
@@ -74,8 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Expanded(
                   child: TextFormField(
                     controller: _lastName,
                     decoration: const InputDecoration(
@@ -92,8 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Expanded(
                   child: TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
@@ -110,8 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Expanded(
                   child: TextFormField(
                     controller: _passwordController,
                     obscureText: true,
@@ -132,7 +128,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ElevatedButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                      EdgeInsets.symmetric(vertical: 5.0, horizontal: 27.0),
                     ),
                     foregroundColor: MaterialStateProperty.resolveWith(
                         (Set<MaterialState> states) {
@@ -169,61 +165,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // UPDATED
                   child: const Text('Sign up'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 38.0),
-                    ),
-                    foregroundColor: MaterialStateProperty.resolveWith(
-                        (Set<MaterialState> states) {
-                      return states.contains(MaterialState.disabled)
-                          ? null
-                          : Colors.white;
-                    }),
-                    backgroundColor: MaterialStateProperty.resolveWith(
-                        (Set<MaterialState> states) {
-                      return states.contains(MaterialState.disabled)
-                          ? null
-                          : Colors.black;
-                    }),
-                  ),
-                  onPressed: () async {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {}
-                  },
-                  // UPDATED
-                  child: const Text('Google Signup'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(50),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10),
+                Expanded(
+                    child: Container(
+                  margin: const EdgeInsets.only(top: 10),
                   child: Text(
-                    'Already have an account ?',
+                    'Already have an account ? Swipe right =>',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 17,
                     ),
                   ),
-                ),
-                Container(
-                    width: 150,
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.all(Radius.circular(50.0))),
-                    child: Center(
-                      child: Text(
-                        "Swipe right >",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                        ),
-                      ),
-                    )),
+                )),
               ],
             ),
           ),
