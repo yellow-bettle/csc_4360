@@ -51,3 +51,57 @@
 # Firebase
 /assignment_2/lib/firebase_options.dart
 /assignment_2/assets/.env
+
+
+# Miscellaneous
+/midterm_project/*.class
+/midterm_project/*.log
+/midterm_project/*.pyc
+/midterm_project/*.swp
+/midterm_project/.DS_Store
+/midterm_project/.atom/
+/midterm_project/.buildlog/
+/midterm_project/.history
+/midterm_project/.svn/
+
+# IntelliJ related
+/midterm_project/*.iml
+/midterm_project/*.ipr
+/midterm_project/*.iws
+/midterm_project/.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+/midterm_project/**/doc/api/
+/midterm_project/**/ios/Flutter/.last_build_id
+/midterm_project/.dart_tool/
+/midterm_project/.flutter-plugins
+/midterm_project/.flutter-plugins-dependencies
+/midterm_project/.packages
+/midterm_project/.pub-cache/
+/midterm_project/.pub/
+/midterm_project//build/
+/midterm_project/ios/Runner/GoogleService-Info.plist
+/midterm_project/ios/Runner/Info.plist
+/midterm_project/android/app/google-services.json
+
+# Web related
+/midterm_project/lib/generated_plugin_registrant.dart
+
+# Symbolication related
+/midterm_project/app.*.symbols
+
+# Obfuscation related
+/midterm_project/app.*.map.json
+
+# Android Studio will place build artifacts here
+/midterm_project/android/app/debug
+/midterm_project/android/app/profile
+/midterm_project/android/app/release
+
+# Firebase
+/midterm_project/lib/firebase_options.dart

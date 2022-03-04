@@ -76,6 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.pop(context);
       Navigator.of(context).pushReplacementNamed('/');
     } catch (e) {
+      print(e.toString());
+      print(await _auth.googleSignIn);
+
       ScaffoldMessenger.of(context).showSnackBar(errorSigningOutText);
     }
   }

@@ -30,7 +30,8 @@ flutter_native_splash:
   ios_content_mode: scaleAspectFill
   web_image_mode: stretch
   fullscreen: true
-  ios: false
+
+  
 
 assets:
   - assets/

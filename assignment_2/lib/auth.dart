@@ -26,15 +26,15 @@ class AuthService {
 
   Future<UserCredential> signInWithGoogle() async {
     if (kIsWeb) {
+      print(_auth.app.hashCode);
       // Create a new provider
       GoogleAuthProvider googleProvider = GoogleAuthProvider();
-
       googleProvider
           .addScope('https://www.googleapis.com/auth/contacts.readonly');
       googleProvider.setCustomParameters({'login_hint': 'user@example.com'});
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      return await _auth.signInWithPopup(googleProvider);
     } else {
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -50,7 +50,7 @@ class AuthService {
       );
 
       // Once signed in, return the UserCredential
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      return await _auth.signInWithCredential(credential);
     }
   }
 
@@ -63,7 +63,6 @@ class AuthService {
 
       var uuid = Uuid();
       var v1 = uuid.v1();
-      // print(user.additionalUserInfo?.profile);
       Map<String, String> todoList = {
         "firstName": user.additionalUserInfo?.profile?["given_name"],
         "lastName": user.additionalUserInfo?.profile?["family_name"],

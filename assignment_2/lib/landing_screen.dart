@@ -40,7 +40,6 @@ class LandingScreen extends StatelessWidget {
                   UserCredential? user;
                   try {
                     UserCredential? user = await _auth.signInWithGoogle();
-                    print(user);
                     _auth.storeGoogleUserInCollection(user);
                     if (user != null) {
                       Navigator.of(context).pushReplacementNamed("/welcome");
