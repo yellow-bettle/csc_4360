@@ -158,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         setState(() {
                           _success = false;
                           _failureReason = response.elementAt(1).toString();
-                        });
+                        }); 
                       }
                     }
                   },

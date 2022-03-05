@@ -19,6 +19,9 @@ dependencies:
   flutter_dotenv: ^5.0.2
   bubble: ^1.2.1
 
+assets:
+  - assets/
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

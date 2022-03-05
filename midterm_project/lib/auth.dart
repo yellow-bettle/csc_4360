@@ -24,14 +24,26 @@ class AuthService {
     return _auth.authStateChanges();
   }
 
+  Future<String> getFullName() async {
+    var data = await _firestoredb
+        .collection('users')
+        .doc(_auth.currentUser?.uid)
+        .get();
+
+    return data.data()!["firstName"] + " " + data.data()!["lastName"];
+  }
+
   Future<Iterable<Map<String, dynamic>>> searchUserByFirstName(
       String searchText) async {
     var data = await _firestoredb
         .collection('users')
-        .where("firstName", isEqualTo: searchText)
+        .where("firstName", isEqualTo: searchText);
+
+    data = data.where("userId", isNotEqualTo: _auth.currentUser?.uid).limit(2);
+
+    return data
         .get()
         .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
-    return data;
   }
 
   Future<int> getNumberOfContactsForCurrentUser() async {

@@ -68,9 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return Card(
                 child: ListTile(
-                    leading: Icon(
-                      Icons.person,
-                      size: 30,
+                    leading: Image.asset(
+                      'profile.png',
+                      width: 40,
+                      height: 40,
                     ),
                     trailing: Icon(Icons.chat),
                     title: Text(data['firstName'] + " " + data['lastName']),
