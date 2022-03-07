@@ -17,7 +17,6 @@ class AuthService {
   final FirebaseFirestore _firestoredb = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // final googleSignIn = GoogleSignIn();
   bool _success = false;
   String _failureReason = "None";
 
