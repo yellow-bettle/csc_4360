@@ -215,16 +215,16 @@ class AuthService {
           .collection("users")
           .doc(userCredential.user?.uid ?? v1);
 
-      Map<String, String> userObject = {
+      Map<String, dynamic> userObject = {
         "firstName": firstName,
         "lastName": lastName,
         "timestamp": timestamp,
         "userId": userCredential.user?.uid ?? v1,
+        "rank": 1,
       };
 
-      documentReference
-          .set(userObject)
-          .whenComplete(() => print("Data stored successfully"));
+      documentReference.set([userObject]).whenComplete(
+          () => print("Data stored successfully"));
 
       Navigator.of(context).pushReplacementNamed("/home");
       _success = true;
