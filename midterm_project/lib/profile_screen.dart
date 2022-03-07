@@ -78,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'profile.png',
+                  'assets/profile.png',
                   width: 80,
                   height: 80,
                 )

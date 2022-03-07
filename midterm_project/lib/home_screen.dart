@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Card(
                 child: ListTile(
                     leading: Image.asset(
-                      'profile.png',
+                      'assets/profile.png',
                       width: 40,
                       height: 40,
                     ),

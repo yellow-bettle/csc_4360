@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'dart:async';
+import 'package:dart_sentiment/dart_sentiment.dart';
 
 class AuthService {
   void initialization() async {
@@ -47,90 +48,124 @@ class AuthService {
   }
 
   Future<int> getNumberOfContactsForCurrentUser() async {
-    return _firestoredb
+    var d = await _firestoredb
         .collection('users')
         .doc(_auth.currentUser?.uid)
-        .collection("contacts")
         .get()
-        .then((value) => value.size);
+        .then((value) => value.data());
+    return d!["rank"];
   }
 
   Future<String> sendMessage(
       String convoId, String? idFrom, String? idTo, String content) async {
-    try {
-      // Get reference to Firestore collection
-      var collectionRef = _firestoredb.collection('messages');
-      var doc = await collectionRef.doc(convoId).get();
-      String timeStamp = DateTime.now().toString();
-
-      if (doc.exists) {
-        await _firestoredb
-            .collection("messages")
-            .doc(convoId)
-            .collection(convoId)
-            .doc(timeStamp)
-            .set({
-          "content": content,
-          "idFrom": idFrom,
-          "idTo": idTo,
-          "timeStamp": timeStamp
-        });
-      } else {
-        await _firestoredb
-            .collection("messages")
-            .doc(convoId)
-            .set({"content": content});
-
-        Map<String, String> receiver = {};
-
-        await _firestoredb
-            .collection('users')
-            .where('userId', isEqualTo: idFrom)
-            .get()
-            .then((QuerySnapshot querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
-            receiver["firstName"] = doc["firstName"];
-            receiver["lastName"] = doc["lastName"];
-          });
-        });
-
-        await _firestoredb
-            .collection("users")
-            .doc(idTo)
-            .collection("contacts")
-            .doc(idFrom)
-            .set({
-          "firstName": receiver["firstName"],
-          "lastName": receiver["lastName"],
-          "userId": idFrom,
-        });
-
-        Map<String, String> sender = {};
-
-        await _firestoredb
-            .collection('users')
-            .where('userId', isEqualTo: idTo)
-            .get()
-            .then((QuerySnapshot querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
-            sender["firstName"] = doc["firstName"];
-            sender["lastName"] = doc["lastName"];
-          });
-        });
-
-        await _firestoredb
-            .collection("users")
-            .doc(idFrom)
-            .collection("contacts")
-            .doc(idTo)
-            .set({
-          "firstName": sender["firstName"],
-          "lastName": sender["lastName"],
-          "userId": idTo,
-        });
+    final sentiment = Sentiment();
+    int score = 0;
+    if (content.length != 0) {
+      if (content != "dummyData" || content != "") {
+        score = sentiment.analysis(content)["score"];
       }
-      return "SUCCESS";
-    } catch (e) {
+      try {
+        // Get reference to Firestore collection
+        var collectionRef = _firestoredb.collection('messages');
+
+        var doc = await collectionRef.doc(convoId).get();
+        String timeStamp = DateTime.now().toString();
+
+        var d = await _firestoredb
+            .collection('users')
+            .doc(_auth.currentUser?.uid)
+            .get()
+            .then((value) => value.data());
+        int rank = d!["rank"];
+
+        if (score < 0) {
+          if (rank > 1) {
+            // decrease rank
+            await _firestoredb
+                .collection('users')
+                .doc(_auth.currentUser?.uid)
+                .set({"rank": rank - 1}, SetOptions(merge: true));
+          }
+        } else if (score > 0) {
+          if (rank < 5) {
+            // increase rank
+            await _firestoredb
+                .collection('users')
+                .doc(_auth.currentUser?.uid)
+                .set({"rank": rank + 1}, SetOptions(merge: true));
+          }
+        }
+        if (doc.exists) {
+          await _firestoredb
+              .collection("messages")
+              .doc(convoId)
+              .collection(convoId)
+              .doc(timeStamp)
+              .set({
+            "content": content,
+            "idFrom": idFrom,
+            "idTo": idTo,
+            "timeStamp": timeStamp
+          });
+        } else {
+          await _firestoredb
+              .collection("messages")
+              .doc(convoId)
+              .set({"content": content});
+
+          Map<String, String> receiver = {};
+
+          await _firestoredb
+              .collection('users')
+              .where('userId', isEqualTo: idFrom)
+              .get()
+              .then((QuerySnapshot querySnapshot) {
+            querySnapshot.docs.forEach((doc) {
+              receiver["firstName"] = doc["firstName"];
+              receiver["lastName"] = doc["lastName"];
+            });
+          });
+
+          await _firestoredb
+              .collection("users")
+              .doc(idTo)
+              .collection("contacts")
+              .doc(idFrom)
+              .set({
+            "firstName": receiver["firstName"],
+            "lastName": receiver["lastName"],
+            "userId": idFrom,
+          });
+
+          Map<String, String> sender = {};
+
+          await _firestoredb
+              .collection('users')
+              .where('userId', isEqualTo: idTo)
+              .get()
+              .then((QuerySnapshot querySnapshot) {
+            querySnapshot.docs.forEach((doc) {
+              sender["firstName"] = doc["firstName"];
+              sender["lastName"] = doc["lastName"];
+            });
+          });
+
+          await _firestoredb
+              .collection("users")
+              .doc(idFrom)
+              .collection("contacts")
+              .doc(idTo)
+              .set({
+            "firstName": sender["firstName"],
+            "lastName": sender["lastName"],
+            "userId": idTo,
+          });
+        }
+        return "SUCCESS";
+      } catch (e) {
+        return "FAILED";
+      }
+    } else {
       return "FAILED";
     }
   }

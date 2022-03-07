@@ -128,9 +128,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget buildItem(int index, DocumentSnapshot document) {
-    // if (!document['read'] && document['idTo'] == uid) {
-    //   Database.updateMessageRead(document, convoID);
-    // }
     if (document['content'] != "dummyData") {
       if (document['idFrom'] == uid) {
         // Right (my message)
@@ -184,49 +181,3 @@ class _ChatScreenState extends State<ChatScreen> {
     _message.clear();
   }
 }
-
-
-
-  
-
-//   static void sendMessage(
-//     String convoID,
-//     String id,
-//     String pid,
-//     String content,
-//     String timestamp,
-//   ) {
-//     final DocumentReference convoDoc =
-//         firebaseFirestore.collection('messages').document(convoID);
-
-//     convoDoc.setData(<String, dynamic>{
-//       'lastMessage': <String, dynamic>{
-//         'idFrom': id,
-//         'idTo': pid,
-//         'timestamp': timestamp,
-//         'content': content,
-//         'read': false
-//       },
-//       'users': <String>[id, pid]
-//     }).then((dynamic success) {
-//       final DocumentReference messageDoc = firebaseFirestore
-//           .collection('messages')
-//           .document(convoID)
-//           .collection(convoID)
-//           .document(timestamp);
-
-//       Firestore.instance.runTransaction((Transaction transaction) async {
-//         await transaction.set(
-//           messageDoc,
-//           <String, dynamic>{
-//             'idFrom': id,
-//             'idTo': pid,
-//             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-//             'content': content,
-//             'read': false
-//           },
-//         );
-//       });
-//     });
-//   }
-// }
