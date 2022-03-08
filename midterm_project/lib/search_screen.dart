@@ -68,6 +68,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   trailing: Icon(Icons.chat),
                   title: Text(
                       '${userFirstNames.elementAt(index)["firstName"]} ${userFirstNames.elementAt(index)["lastName"]}'),
+                  subtitle:
+                      Text('${userFirstNames.elementAt(index)["location"]}'),
                   onTap: () async {
                     String convoId = getConversationID(
                         user?.uid, userFirstNames.elementAt(index)["userId"]);

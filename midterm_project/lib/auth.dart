@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'dart:async';
 import 'package:dart_sentiment/dart_sentiment.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class AuthService {
   void initialization() async {
@@ -46,13 +48,55 @@ class AuthService {
         .then((snapshot) => snapshot.docs.map((doc) => doc.data()));
   }
 
-  Future<int> getNumberOfContactsForCurrentUser() async {
+  Future<int> getRankForCurrentUser() async {
     var d = await _firestoredb
         .collection('users')
         .doc(_auth.currentUser?.uid)
         .get()
         .then((value) => value.data());
     return d!["rank"];
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  Future<String> _getAddressFromLatLng() async {
+    try {
+      Position position = await _determinePosition();
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      Placemark place = placemarks[0];
+
+      return '${place.locality}, ${place.administrativeArea}, ${place.country}';
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   Future<String> sendMessage(
@@ -122,6 +166,7 @@ class AuthService {
             querySnapshot.docs.forEach((doc) {
               receiver["firstName"] = doc["firstName"];
               receiver["lastName"] = doc["lastName"];
+              receiver["location"] = doc["location"];
             });
           });
 
@@ -134,6 +179,7 @@ class AuthService {
             "firstName": receiver["firstName"],
             "lastName": receiver["lastName"],
             "userId": idFrom,
+            "location": receiver["location"]
           });
 
           Map<String, String> sender = {};
@@ -146,6 +192,7 @@ class AuthService {
             querySnapshot.docs.forEach((doc) {
               sender["firstName"] = doc["firstName"];
               sender["lastName"] = doc["lastName"];
+              sender["location"] = doc["location"];
             });
           });
 
@@ -158,6 +205,7 @@ class AuthService {
             "firstName": sender["firstName"],
             "lastName": sender["lastName"],
             "userId": idTo,
+            "location": sender["location"]
           });
         }
         return "SUCCESS";
@@ -197,7 +245,7 @@ class AuthService {
     return;
   }
 
-  Future signUp(BuildContext context, String firstName, String lastName,
+  Future<String> signUp(BuildContext context, String firstName, String lastName,
       String email, String password) async {
     print("Sign Up!");
 
@@ -214,39 +262,42 @@ class AuthService {
           .collection("users")
           .doc(userCredential.user?.uid ?? v1);
 
+      String location = await _getAddressFromLatLng();
+
       Map<String, dynamic> userObject = {
         "firstName": firstName,
         "lastName": lastName,
         "timestamp": timestamp,
         "userId": userCredential.user?.uid ?? v1,
         "rank": 1,
+        "location": location
       };
 
-      documentReference.set([userObject]).whenComplete(
-          () => print("Data stored successfully"));
+      documentReference
+          .set(userObject)
+          .whenComplete(() => print("Data stored successfully"));
 
       Navigator.of(context).pushReplacementNamed("/home");
-      _success = true;
       _failureReason = "None";
-      return {_success, _failureReason};
+      return _failureReason;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         _success = false;
         _failureReason = 'The password provided is too weak.';
-        return {_success, _failureReason};
+        return _failureReason;
       } else if (e.code == 'email-already-in-use') {
         _success = false;
         _failureReason = 'The account already exists for that email.';
-        return {_success, _failureReason};
+        return _failureReason;
       } else {
         _success = false;
         _failureReason = e.message.toString();
-        return {_success, _failureReason};
+        return _failureReason;
       }
     } catch (e) {
       _success = false;
       _failureReason = e.toString();
-      return {_success, _failureReason};
+      return _failureReason;
     }
   }
 

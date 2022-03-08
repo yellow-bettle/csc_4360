@@ -22,11 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final AuthService _auth = AuthService();
     final user = Provider.of<User?>(context);
 
-    final Stream<QuerySnapshot> _usersStream2 = FirebaseFirestore.instance
-        .collection('users')
-        .where("userId", isNotEqualTo: user?.uid)
-        .snapshots();
-
     final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
         .collection('users')
         .doc(user?.uid)
@@ -57,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
 
           return ListView(
@@ -65,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-
               return Card(
                 child: ListTile(
                     leading: Image.asset(
@@ -75,6 +71,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     trailing: Icon(Icons.chat),
                     title: Text(data['firstName'] + " " + data['lastName']),
+                    subtitle: Row(children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 20,
+                      ),
+                      Text(
+                        data["location"],
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ]),
                     onTap: () async {
                       String convoId =
                           getConversationID(user?.uid, data["userId"]);

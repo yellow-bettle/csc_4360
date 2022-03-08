@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FutureBuilder<int>(
-                  future: _auth.getNumberOfContactsForCurrentUser(),
+                  future: _auth.getRankForCurrentUser(),
                   builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
                     List<Widget> children;
                     if (snapshot.hasData) {

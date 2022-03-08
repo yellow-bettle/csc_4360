@@ -146,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () async {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      HashSet<Object> response = await _auth.signUp(
+                      String response = await _auth.signUp(
                         context,
                         _firstName.value.text,
                         _lastName.value.text,
@@ -154,11 +154,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         _passwordController.value.text,
                       );
 
-                      if (response.elementAt(0) == false) {
+                      if (response != "None") {
                         setState(() {
                           _success = false;
-                          _failureReason = response.elementAt(1).toString();
-                        }); 
+                          _failureReason = response;
+                        });
                       }
                     }
                   },
